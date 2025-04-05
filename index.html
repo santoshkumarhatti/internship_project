@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Note App - Firebase</title>
+  <title>All Notes - Firebase</title>
   <style>
     body {
       background: #121212;
@@ -13,7 +13,7 @@
     }
     textarea {
       width: 90%;
-      height: 200px;
+      height: 150px;
       font-size: 18px;
       padding: 10px;
       border-radius: 10px;
@@ -31,18 +31,29 @@
       color: white;
       cursor: pointer;
     }
+    .note {
+      background: #1e1e1e;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 8px;
+      width: 90%;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <h1>📝 My Note App (Firebase)</h1>
+  <h1>📝 Firebase Notes App</h1>
   <textarea id="note" placeholder="Write your note here..."></textarea><br>
   <button onclick="saveNote()">Save Note</button>
 
-  <!-- ✅ Firebase SDK (Compat Version) -->
+  <h2 style="margin-top: 40px;">📚 All Notes</h2>
+  <div id="notesList"></div>
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
   <script>
-    // ✅ Your Firebase Config (already filled)
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCpxJEcYTXPj_aDQSsmJYw8pnDQyGu4EAI",
       authDomain: "ev-web-santu.firebaseapp.com",
@@ -54,23 +65,49 @@
       measurementId: "G-S0QEBQW879"
     };
 
-    // ✅ Initialize Firebase
+    // Init Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ✅ Load note on page load
-    window.onload = function () {
-      db.ref("note").once("value").then(snapshot => {
-        document.getElementById("note").value = snapshot.val() || "";
-      });
-    };
-
-    // ✅ Save note to Firebase
+    // Save note with timestamp ID
     function saveNote() {
-      const note = document.getElementById("note").value;
-      db.ref("note").set(note);
-      alert("Note saved to Firebase!");
+      const note = document.getElementById("note").value.trim();
+      if (note === "") return alert("Please enter a note!");
+
+      const timestamp = Date.now();
+      db.ref("notes/" + timestamp).set({
+        text: note,
+        createdAt: new Date().toLocaleString()
+      }, () => {
+        document.getElementById("note").value = "";
+        loadNotes(); // Reload notes
+        alert("Note saved!");
+      });
     }
+
+    // Load all notes
+    function loadNotes() {
+      db.ref("notes").once("value").then(snapshot => {
+        const notesContainer = document.getElementById("notesList");
+        notesContainer.innerHTML = ""; // clear old notes
+        const notes = snapshot.val();
+        if (notes) {
+          const sortedKeys = Object.keys(notes).sort((a, b) => b - a); // Latest first
+          sortedKeys.forEach(key => {
+            const noteData = notes[key];
+            const noteDiv = document.createElement("div");
+            noteDiv.className = "note";
+            noteDiv.innerHTML = `<strong>${noteData.createdAt}</strong><br>${noteData.text}`;
+            notesContainer.appendChild(noteDiv);
+          });
+        } else {
+          notesContainer.innerHTML = "<p>No notes yet...</p>";
+        }
+      });
+    }
+
+    // Load on page load
+    window.onload = loadNotes;
   </script>
 </body>
 </html>
