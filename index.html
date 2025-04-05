@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Note App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 10px;
+      font-size: 16px;
+      background: #222;
+      color: #eee;
+      border: none;
+      resize: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #444;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 Simple Note App</h1>
+  <textarea id="note" placeholder="Type your note here..."></textarea>
+  <br>
+  <button onclick="saveNote()">Save Note</button>
+  <button onclick="loadNote()">Load Note</button>
+
+  <script>
+    function saveNote() {
+      const note = document.getElementById("note").value;
+      localStorage.setItem("myNote", note);
+      alert("Note saved!");
+    }
+
+    function loadNote() {
+      const note = localStorage.getItem("myNote");
+      document.getElementById("note").value = note || "";
+    }
+
+    window.onload = loadNote;
+  </script>
+</body>
+</html>
