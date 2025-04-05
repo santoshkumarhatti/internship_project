@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Note App</title>
+  <meta charset="UTF-8" />
+  <title>Note App - Firebase</title>
   <style>
     body {
       background: #121212;
       color: white;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 40px;
     }
@@ -17,6 +17,9 @@
       font-size: 18px;
       padding: 10px;
       border-radius: 10px;
+      background: #222;
+      color: #fff;
+      border: none;
     }
     button {
       margin-top: 20px;
@@ -31,41 +34,42 @@
   </style>
 </head>
 <body>
-  <h1>📝 My Note</h1>
+  <h1>📝 My Note App (Firebase)</h1>
   <textarea id="note" placeholder="Write your note here..."></textarea><br>
-  <button onclick="saveNote()">Save</button>
+  <button onclick="saveNote()">Save Note</button>
 
-  <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"></script>
+  <!-- ✅ Firebase SDK (Compat Version) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
   <script>
-    // 🔥 Replace with your Firebase config
+    // ✅ Your Firebase Config (already filled)
     const firebaseConfig = {
       apiKey: "AIzaSyCpxJEcYTXPj_aDQSsmJYw8pnDQyGu4EAI",
-            authDomain: "ev-web-santu.firebaseapp.com",
-            databaseURL: "https://ev-web-santu-default-rtdb.firebaseio.com",
-            projectId: "ev-web-santu",
-            storageBucket: "ev-web-santu.appspot.com",
-            messagingSenderId: "742291728709",
-            appId: "1:742291728709:web:ec4bcc85abc154898bf62c",
-            measurementId: "G-S0QEBQW879"
+      authDomain: "ev-web-santu.firebaseapp.com",
+      databaseURL: "https://ev-web-santu-default-rtdb.firebaseio.com",
+      projectId: "ev-web-santu",
+      storageBucket: "ev-web-santu.appspot.com",
+      messagingSenderId: "742291728709",
+      appId: "1:742291728709:web:ec4bcc85abc154898bf62c",
+      measurementId: "G-S0QEBQW879"
     };
 
-    // Initialize Firebase
+    // ✅ Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Load note on page load
-    window.onload = function() {
-      db.ref("note").once("value", (snapshot) => {
+    // ✅ Load note on page load
+    window.onload = function () {
+      db.ref("note").once("value").then(snapshot => {
         document.getElementById("note").value = snapshot.val() || "";
       });
     };
 
+    // ✅ Save note to Firebase
     function saveNote() {
       const note = document.getElementById("note").value;
       db.ref("note").set(note);
-      alert("Note saved!");
+      alert("Note saved to Firebase!");
     }
   </script>
 </body>
