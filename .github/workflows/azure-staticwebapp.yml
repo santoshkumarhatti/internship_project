@@ -1,0 +1,28 @@
+name: Deploy to Azure Web App
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy Web App
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Optional: Add your own build steps here if needed
+      # Example for Node:
+      # - name: Install dependencies
+      #   run: npm install
+      # - name: Build app
+      #   run: npm run build
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: note-firebase-app  # 🟡 Replace with your actual Web App name
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
