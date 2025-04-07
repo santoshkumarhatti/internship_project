@@ -51,6 +51,17 @@
       color: white;
       cursor: pointer;
     }
+    .edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 80px;
+      background: #ffa726;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -80,16 +91,20 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    let editTimestamp = null;
+
     function saveNote() {
       const note = document.getElementById("note").value.trim();
       if (note === "") return alert("Please enter a note!");
 
-      const timestamp = Date.now();
+      const timestamp = editTimestamp || Date.now();
       db.ref("notes/" + timestamp).set({
         text: note,
         createdAt: new Date().toLocaleString()
       }, () => {
         document.getElementById("note").value = "";
+        editTimestamp = null;
+        document.querySelector("button").innerText = "Save Note";
         loadNotes();
         alert("Note saved!");
       });
@@ -102,6 +117,15 @@
           loadNotes();
         });
       }
+    }
+
+    function editNote(timestamp) {
+      db.ref("notes/" + timestamp).once("value").then(snapshot => {
+        const noteData = snapshot.val();
+        document.getElementById("note").value = noteData.text;
+        editTimestamp = timestamp;
+        document.querySelector("button").innerText = "Update Note";
+      });
     }
 
     function loadNotes() {
@@ -117,6 +141,7 @@
             noteDiv.className = "note";
             noteDiv.innerHTML = `
               <button class="delete-btn" onclick="deleteNote(${key})">Delete</button>
+              <button class="edit-btn" onclick="editNote(${key})">Edit</button>
               <strong>${noteData.createdAt}</strong><br>${noteData.text}
             `;
             notesContainer.appendChild(noteDiv);
