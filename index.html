@@ -83,7 +83,6 @@
       color: #00bcd4;
       font-size: 1.2rem;
     }
-
   </style>
 </head>
 <body>
@@ -97,7 +96,7 @@
     async function getWeather() {
       const city = document.getElementById("cityInput").value.trim();
       const apiKey = "455c259bd16748d0a5590803253105"; // Your API key
-      const url = "https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(city)}&aqi=no";
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(city)}&aqi=no`;
 
       const output = document.getElementById("output");
       output.innerHTML = "<p class='loading'>Fetching weather...</p>";
@@ -119,11 +118,11 @@
             <p><strong>UV Index:</strong> ${w.uv}</p>
           `;
         } else {
-          output.innerHTML = <p class="error">No weather data found for "<strong>${city}</strong>".</p>;
+          output.innerHTML = `<p class="error">No weather data found for "<strong>${city}</strong>".</p>`;
         }
       } catch (error) {
         console.error(error);
-        output.innerHTML = <p class="error">Error fetching data. Please check the city name or API key.</p>;
+        output.innerHTML = `<p class="error">Error fetching data. Please check the city name or API key.</p>`;
       }
     }
   </script>
